@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPU Server Tour</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="tour" role="main">
+    <div class="viewer" role="region" aria-label="Server image viewer">
+      <div class="viewer-image-wrap">
+        <div id="viewer-image-inner" class="viewer-image-inner">
+          <img
+            id="tour-image"
+            class="viewer-image"
+            src=""
+            alt=""
+            draggable="false"
+          >
+          <div id="hotspot-layer" class="hotspot-layer" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" aria-label="Image navigation">
+      <div id="strip-wrap" class="strip-wrap">
+        <div id="image-strip" class="image-strip"></div>
+      </div>
+      <div class="nav-buttons">
+        <button type="button" id="btn-prev" class="nav-btn nav-prev" aria-label="Previous view">‹</button>
+        <button type="button" id="btn-next" class="nav-btn nav-next" aria-label="Next view">›</button>
+      </div>
+    </nav>
+
+    <div
+      id="popup"
+      class="popup"
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="popup-title"
+      aria-describedby="popup-body"
+      hidden
+    >
+      <div class="popup-content" id="popup-content">
+        <h2 id="popup-title" class="popup-title"></h2>
+        <div id="popup-body" class="popup-body"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
