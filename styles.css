@@ -1,14 +1,21 @@
 /* GPU Server Tour – full-screen image, strip carousel, bottom nav */
 
+/* ---------------------------------------------------------------------------
+   Base layout and typography
+   --------------------------------------------------------------------------- */
 :root {
   --color-surface: #252530;
   --color-text: #e8e8ed;
   --color-text-muted: #9898a6;
+  --color-text-on-light: #1a1a1a;
   --color-accent: #4a9eff;
   --color-hotspot-border: rgba(74, 158, 255, 0.8);
   --color-hotspot-active: rgba(74, 158, 255, 0.25);
   --color-popup-bg: #2a2a36;
+  --color-popup-title: #f0f0f6;
   --color-backdrop: rgba(0, 0, 0, 0.6);
+  --color-body-bg: #1a1520;
+  --color-body-text: #333;
   --radius: 8px;
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   --strip-thumb-size: 56px;
@@ -21,17 +28,23 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: #333;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    sans-serif;
+  color: var(--color-body-text);
   line-height: 1.5;
 }
 
 body {
-  background: #1a1520;
+  background: var(--color-body-bg);
   background-image: url("images/background.png");
   background-size: cover;
   background-position: center;
@@ -46,7 +59,9 @@ body {
   padding: 0;
 }
 
-/* Viewer: full-screen image */
+/* ---------------------------------------------------------------------------
+   Viewer and image sizing
+   --------------------------------------------------------------------------- */
 .viewer {
   flex: 1;
   min-height: 0;
@@ -67,7 +82,9 @@ body {
   flex-shrink: 0;
   max-width: 100%;
   max-height: 100%;
-  border: 8px solid rgba(0, 0, 0, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  overflow: hidden;
   box-shadow:
     0 0 0 2px rgba(0, 0, 0, 0.6),
     0 0 40px rgba(0, 0, 0, 0.8),
@@ -84,6 +101,33 @@ body {
   vertical-align: middle;
 }
 
+/* Empty state or image load error messages (app.js injects these) */
+.viewer-message,
+.viewer-image-fallback {
+  color: var(--color-text);
+  padding: 1.5rem;
+  text-align: center;
+  margin: 0;
+}
+
+.viewer-image-fallback {
+  display: none;
+}
+
+/* Fade overlay for image/slide transitions */
+.viewer-fade-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.125s ease;
+}
+
+/* ---------------------------------------------------------------------------
+   Hotspot overlay and states
+   --------------------------------------------------------------------------- */
 .hotspot-layer {
   position: absolute;
   inset: 0;
@@ -99,7 +143,6 @@ body {
   pointer-events: auto;
 }
 
-/* Segmentation-style regions: polygon paths, yellow border + white glow on hover */
 .hotspot-region {
   cursor: pointer;
   outline: none;
@@ -108,6 +151,7 @@ body {
 .hotspot-region path {
   stroke: #f5d42e;
   stroke-width: 4;
+  vector-effect: non-scaling-stroke;
   fill: transparent;
   filter: none;
   transition: filter 0.15s ease;
@@ -115,18 +159,22 @@ body {
 
 .hotspot-region:hover path,
 .hotspot-region.hover path {
-  filter: drop-shadow(0 0 0.5px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 0 1.5px #fff);
+  filter: drop-shadow(0 0 0.5px #fff) drop-shadow(0 0 1px #fff)
+    drop-shadow(0 0 1.5px #fff);
 }
 
 .hotspot-region.active path {
-  filter: drop-shadow(0 0 0.5px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 0 1.5px #fff);
+  filter: drop-shadow(0 0 0.5px #fff) drop-shadow(0 0 1px #fff)
+    drop-shadow(0 0 1.5px #fff);
 }
 
 .hotspot-region:focus path {
   filter: drop-shadow(0 0 0.5px #fff) drop-shadow(0 0 1px #fff);
 }
 
-/* Bottom nav: transparent, strip + left/right buttons opaque with glow */
+/* ---------------------------------------------------------------------------
+   Thumbnails strip
+   --------------------------------------------------------------------------- */
 .bottom-nav {
   flex-shrink: 0;
   display: flex;
@@ -178,10 +226,12 @@ body {
   box-shadow:
     0 0 12px rgba(255, 255, 255, 0.4),
     0 0 24px rgba(255, 255, 255, 0.2);
-  transition: transform 0.25s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
-/* Square centre crop: fill the square, crop excess equally (object-position: center) */
 .strip-item img {
   display: block;
   width: 100%;
@@ -203,7 +253,6 @@ body {
   outline-offset: 2px;
 }
 
-/* Only the current thumbnail is expanded; all others same size */
 .strip-item.strip-center {
   transform: scale(1.2);
   border-color: rgba(255, 255, 255, 0.7);
@@ -226,7 +275,7 @@ body {
   font-size: 2rem;
   line-height: 1;
   font-family: inherit;
-  color: #1a1a1a;
+  color: var(--color-text-on-light);
   background: rgba(255, 255, 255, 0.95);
   border: 2px solid rgba(255, 255, 255, 0.6);
   border-radius: 50%;
@@ -237,7 +286,10 @@ body {
   box-shadow:
     0 0 12px rgba(255, 255, 255, 0.4),
     0 0 24px rgba(255, 255, 255, 0.2);
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .nav-btn:hover {
@@ -258,7 +310,16 @@ body {
   cursor: not-allowed;
 }
 
-/* Popup: positioned to side of hotspot, no backdrop */
+.nav-btn.nav-auto-tour {
+  width: auto;
+  min-width: var(--nav-btn-size);
+  padding: 0 1rem;
+  border-radius: 24px;
+}
+
+/* ---------------------------------------------------------------------------
+   Popup
+   --------------------------------------------------------------------------- */
 .popup {
   position: fixed;
   z-index: 100;
@@ -285,7 +346,7 @@ body {
   margin: 0 0 0.5rem 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #f0f0f6;
+  color: var(--color-popup-title);
 }
 
 .popup-body {
@@ -305,7 +366,9 @@ body {
   color: var(--color-text);
 }
 
-/* Responsive / touch */
+/* ---------------------------------------------------------------------------
+   Responsive and touch
+   --------------------------------------------------------------------------- */
 @media (max-width: 640px) {
   :root {
     --strip-thumb-size: 44px;
@@ -316,7 +379,12 @@ body {
     font-size: 1.75rem;
   }
 
+  .strip-item {
+    padding: 2px;
+  }
+
   .popup-content {
+    max-width: min(380px, calc(100vw - 1.5rem));
     padding: 1.25rem;
   }
 }
