@@ -2,6 +2,8 @@
 
 An interactive image viewer for exploring GPU server hardware components.
 
+Visit **https://fistofhit.github.io/server-tour/** to check it out!
+
 ## Overview
 
 This application displays a guided tour of a GPU server with interactive hotspots. Click on any highlighted area to learn more about the component.
