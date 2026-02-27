@@ -95,9 +95,9 @@ Add each hotspot to the `hotspots` array for your image:
 
 Each hotspot needs two description fields:
 
-| Field | Purpose | Length |
-|-------|---------|--------|
-| `what` | What the component is | 1-2 sentences |
+| Field  | Purpose                 | Length        |
+| ------ | ----------------------- | ------------- |
+| `what` | What the component is   | 1-2 sentences |
 | `role` | What the component does | 1-2 sentences |
 
 ### Example:
@@ -124,6 +124,7 @@ content: {
 1. **Fork the repository** (if you don't have access)
 
 2. **Create a new branch**:
+
    ```bash
    git checkout -b add/new-image-name
    ```
@@ -132,9 +133,10 @@ content: {
    - Add your image to `images/`
    - Update `data.js` with hotspots and descriptions
 
-4. **Test locally**: Open `index.html` in a browser to verify everything works
+4. **Test locally**: Open `index.html` in a browser to verify everything works. Run `npm run lint` and `npm run format` before committing.
 
 5. **Commit your changes**:
+
    ```bash
    git add .
    git commit -m "Add new image with hotspots"
@@ -148,14 +150,64 @@ content: {
 
 ---
 
+## Data schema
+
+All tour content lives in `SERVER_TOUR_DATA` in `data.js`. Supported fields:
+
+### Top-level (`SERVER_TOUR_DATA`)
+
+| Field    | Type          | Required | Description                                 |
+| -------- | ------------- | -------- | ------------------------------------------- |
+| `images` | `TourImage[]` | Yes      | Ordered list of slides (images + hotspots). |
+
+### Per image (`TourImage`)
+
+| Field      | Type   | Required | Description                                |
+| ---------- | ------ | -------- | ------------------------------------------ |
+| `id`       | string | Yes      | Unique slide id (e.g. `"front"`, `"top"`). |
+| `src`      | string | Yes      | Path to image (e.g. `"images/front.png"`). |
+| `alt`      | string | Yes      | Accessible description for the image.      |
+| `hotspots` | array  | Yes      | Array of hotspot objects (can be empty).   |
+
+### Per hotspot (`Hotspot`)
+
+| Field           | Type       | Required | Description                                                                                    |
+| --------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `id`            | string     | Yes      | Unique hotspot id.                                                                             |
+| `label`         | string     | Yes      | Short label (ARIA, tooltips).                                                                  |
+| `pointsPx`      | number[]   | Yes\*    | Flat list: `[x1, y1, x2, y2, ...]` in source image pixels.                                     |
+| `sourceWidth`   | number     | Yes\*    | Width (px) of the image the coordinates were drawn for.                                        |
+| `sourceHeight`  | number     | Yes\*    | Height (px) of the image the coordinates were drawn for.                                       |
+| `content`       | object     | Yes      | Popup content: `title`, `what`, `role`, and optionally `integration`.                          |
+| `points`        | number[][] | No       | Alternative: polygon as percentage pairs `[[x%, y%], ...]`; used only if `pointsPx` is absent. |
+| `adjustOffsetX` | number     | No       | Pixel offset to nudge overlay horizontally if alignment is off.                                |
+| `adjustOffsetY` | number     | No       | Pixel offset to nudge overlay vertically.                                                      |
+| `adjustScaleX`  | number     | No       | Scale factor (around polygon center) for horizontal fine-tuning.                               |
+| `adjustScaleY`  | number     | No       | Scale factor (around polygon center) for vertical fine-tuning.                                 |
+
+\*Required when using `pointsPx`; omit only if you use `points` (percentages) instead.
+
+### Popup content (`content`)
+
+| Field         | Type   | Required | Description               |
+| ------------- | ------ | -------- | ------------------------- |
+| `title`       | string | Yes      | Heading in the popup.     |
+| `what`        | string | Yes      | What the component is.    |
+| `role`        | string | Yes      | What the component does.  |
+| `integration` | string | No       | Optional extra paragraph. |
+
+**Testing alignment:** After adding an image and hotspots, open `index.html` in a browser. If a polygon is slightly off, use the browser devtools to confirm the image’s actual dimensions, then add optional `adjustOffsetX/Y` or `adjustScaleX/Y` on that hotspot in `data.js` and refresh. See JSDoc in `data.js` for details.
+
+---
+
 ## Quick Reference
 
-| File | Purpose |
-|------|---------|
-| `data.js` | Contains all image and hotspot data |
-| `app.js` | Application logic (usually no changes needed) |
-| `styles.css` | Styling (popup appearance, etc.) |
-| `index.html` | Main HTML structure |
+| File         | Purpose                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `data.js`    | Contains all image and hotspot data; this is what you edit when adding slides or hotspots.                          |
+| `app.js`     | Application logic (state, geometry, popup, navigation). Usually no changes needed; see README for section overview. |
+| `styles.css` | Styling (viewer, hotspots, popup, responsive).                                                                      |
+| `index.html` | Main HTML structure; comments indicate which element IDs are required by `app.js`.                                  |
 
 ---
 

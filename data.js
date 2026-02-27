@@ -1,5 +1,38 @@
+/* exported SERVER_TOUR_DATA */
 /**
  * GPU Server Tour – slide and hotspot data.
+ *
+ * Data schema (see CONTRIBUTING.md for full documentation):
+ *
+ * @typedef {Object} HotspotContent
+ * @property {string} title - Title shown in the popup
+ * @property {string} what - What the component is (1–2 sentences)
+ * @property {string} role - What the component does (1–2 sentences)
+ * @property {string} [integration] - Optional extra text (e.g. integration notes)
+ *
+ * @typedef {Object} Hotspot
+ * @property {string} id - Unique identifier for the hotspot
+ * @property {string} label - Human-readable label (used for ARIA and tooltips)
+ * @property {number[]} pointsPx - Polygon coordinates as flat list: [x1, y1, x2, y2, ...] in source image pixels
+ * @property {number} sourceWidth - Width in pixels of the image the coordinates were drawn against
+ * @property {number} sourceHeight - Height in pixels of the image the coordinates were drawn against
+ * @property {HotspotContent} content - Popup title and body text
+ * @property {number[][]} [points] - Optional: polygon as percentage pairs [[x%, y%], ...]; used if pointsPx is absent
+ * @property {number} [adjustOffsetX] - Optional: pixel offset to fine-tune overlay position (X)
+ * @property {number} [adjustOffsetY] - Optional: pixel offset to fine-tune overlay position (Y)
+ * @property {number} [adjustScaleX] - Optional: scale factor around polygon centroid (X) for alignment
+ * @property {number} [adjustScaleY] - Optional: scale factor around polygon centroid (Y) for alignment
+ *
+ * @typedef {Object} TourImage
+ * @property {string} id - Unique id for the slide (e.g. "front", "top", "back")
+ * @property {string} src - Path to the image file (e.g. "images/front.png")
+ * @property {string} alt - Accessible description of the image
+ * @property {Hotspot[]} hotspots - Array of clickable polygon regions
+ *
+ * @typedef {Object} ServerTourData
+ * @property {TourImage[]} images - Ordered list of slides
+ * @property {number} [defaultAdjustOffsetX] - Optional global default for hotspot adjustOffsetX
+ * @property {number} [defaultAdjustOffsetY] - Optional global default for hotspot adjustOffsetY
  *
  * HOW TO ADD A POLYGON BORDER (using pixel coordinates):
  * 1. Open your image in an editor that shows pixel coordinates (e.g. Photoshop, GIMP, or an online image map tool).
@@ -20,6 +53,7 @@
  * The app will automatically scale your coordinates to match the displayed image size.
  */
 
+/** @type {ServerTourData} */
 const SERVER_TOUR_DATA = {
   images: [
     {
@@ -30,7 +64,11 @@ const SERVER_TOUR_DATA = {
         {
           id: "fan-cooling-tower",
           label: "Fan + cooling tower assembly",
-          pointsPx: [808, 503, 828, 504, 863, 483, 955, 483, 994, 499, 1015, 499, 1073, 605, 1091, 658, 1042, 805, 1014, 808, 1008, 867, 829, 861, 821, 801, 805, 751, 791, 668],
+          pointsPx: [
+            808, 503, 828, 504, 863, 483, 955, 483, 994, 499, 1015, 499, 1073,
+            605, 1091, 658, 1042, 805, 1014, 808, 1008, 867, 829, 861, 821, 801,
+            805, 751, 791, 668,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -90,7 +128,9 @@ const SERVER_TOUR_DATA = {
         {
           id: "pcie-gpu-1",
           label: "PCIe GPU",
-          pointsPx: [583, 182, 632, 182, 643, 314, 636, 493, 557, 490, 552, 345],
+          pointsPx: [
+            583, 182, 632, 182, 643, 314, 636, 493, 557, 490, 552, 345,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -102,7 +142,9 @@ const SERVER_TOUR_DATA = {
         {
           id: "pcie-gpu-2",
           label: "PCIe GPU",
-          pointsPx: [770, 175, 765, 325, 798, 494, 860, 494, 875, 360, 809, 168],
+          pointsPx: [
+            770, 175, 765, 325, 798, 494, 860, 494, 875, 360, 809, 168,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -126,7 +168,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "nic",
           label: "NIC",
-          pointsPx: [443, 179, 447, 244, 417, 322, 434, 401, 464, 402, 487, 305, 473, 179],
+          pointsPx: [
+            443, 179, 447, 244, 417, 322, 434, 401, 464, 402, 487, 305, 473,
+            179,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -169,7 +214,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "nic-top",
           label: "NIC",
-          pointsPx: [53, 751, 72, 750, 179, 709, 417, 710, 391, 742, 308, 745, 297, 761, 209, 767, 208, 753, 135, 756, 70, 789, 44, 786],
+          pointsPx: [
+            53, 751, 72, 750, 179, 709, 417, 710, 391, 742, 308, 745, 297, 761,
+            209, 767, 208, 753, 135, 756, 70, 789, 44, 786,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -193,7 +241,9 @@ const SERVER_TOUR_DATA = {
         {
           id: "host-memory-2-top",
           label: "Host memory (RAM)",
-          pointsPx: [694, 374, 698, 432, 781, 432, 785, 467, 922, 467, 921, 370],
+          pointsPx: [
+            694, 374, 698, 432, 781, 432, 785, 467, 922, 467, 921, 370,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -205,7 +255,9 @@ const SERVER_TOUR_DATA = {
         {
           id: "host-memory-3-top",
           label: "Host memory (RAM)",
-          pointsPx: [699, 574, 697, 524, 758, 505, 783, 483, 925, 483, 927, 577],
+          pointsPx: [
+            699, 574, 697, 524, 758, 505, 783, 483, 925, 483, 927, 577,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -241,7 +293,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "fan-cooling-tower-top",
           label: "Fan + cooling tower assembly",
-          pointsPx: [717, 251, 716, 370, 916, 368, 947, 346, 943, 178, 769, 177, 750, 215, 737, 246],
+          pointsPx: [
+            717, 251, 716, 370, 916, 368, 947, 346, 943, 178, 769, 177, 750,
+            215, 737, 246,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -253,7 +308,9 @@ const SERVER_TOUR_DATA = {
         {
           id: "internal-fan",
           label: "Internal fan",
-          pointsPx: [1000, 259, 999, 405, 1069, 404, 1138, 387, 1140, 214, 1065, 214],
+          pointsPx: [
+            1000, 259, 999, 405, 1069, 404, 1138, 387, 1140, 214, 1065, 214,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -265,7 +322,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "chassis-intrusion-detector",
           label: "Chassis intrusion detector",
-          pointsPx: [1143, 944, 1164, 961, 1209, 959, 1205, 942, 1181, 922, 1155, 920, 1205, 786, 1196, 783, 1133, 925],
+          pointsPx: [
+            1143, 944, 1164, 961, 1209, 959, 1205, 942, 1181, 922, 1155, 920,
+            1205, 786, 1196, 783, 1133, 925,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -276,12 +336,15 @@ const SERVER_TOUR_DATA = {
         },
         {
           id: "pcie-cable-mcio",
-          label: "PCIe cable (MCIO)",
-          pointsPx: [609, 597, 637, 578, 653, 578, 648, 655, 596, 658, 593, 641, 505, 630, 446, 632, 337, 623, 337, 586, 364, 587, 450, 587, 505, 585],
+          label: "PCIe cable (Slim SAS)",
+          pointsPx: [
+            609, 597, 637, 578, 653, 578, 648, 655, 596, 658, 593, 641, 505,
+            630, 446, 632, 337, 623, 337, 586, 364, 587, 450, 587, 505, 585,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
-            title: "PCIe cable (MCIO)",
+            title: "PCIe cable (Slim SAS)",
             what: "A high-speed cable connector used to link PCIe devices, commonly used for GPU to GPU communication.",
             role: "Enables data transfer between GPUs and the motherboard for compute and memory access.",
           },
@@ -289,7 +352,12 @@ const SERVER_TOUR_DATA = {
         {
           id: "power-cable-pcie-gpu-1",
           label: "Power cable for PCIe GPU 1",
-          pointsPx: [593, 511, 657, 511, 733, 492, 767, 464, 764, 446, 735, 443, 698, 472, 683, 501, 655, 557, 618, 590, 578, 594, 579, 584, 610, 574, 637, 526, 674, 470, 731, 431, 771, 436, 779, 458, 773, 486, 746, 508, 705, 520, 612, 523, 609, 532, 588, 531],
+          pointsPx: [
+            593, 511, 657, 511, 733, 492, 767, 464, 764, 446, 735, 443, 698,
+            472, 683, 501, 655, 557, 618, 590, 578, 594, 579, 584, 610, 574,
+            637, 526, 674, 470, 731, 431, 771, 436, 779, 458, 773, 486, 746,
+            508, 705, 520, 612, 523, 609, 532, 588, 531,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -320,7 +388,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "pcie-gpu-2-back",
           label: "PCIe GPU 2",
-          pointsPx: [531, 266, 504, 263, 504, 254, 482, 253, 384, 568, 417, 721, 452, 715, 474, 562, 514, 523, 548, 365],
+          pointsPx: [
+            531, 266, 504, 263, 504, 254, 482, 253, 384, 568, 417, 721, 452,
+            715, 474, 562, 514, 523, 548, 365,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -332,7 +403,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "nic-back",
           label: "NIC",
-          pointsPx: [898, 507, 920, 419, 939, 436, 957, 495, 975, 495, 994, 548, 990, 568, 999, 585, 1009, 565, 1054, 565, 997, 746, 955, 746, 967, 703],
+          pointsPx: [
+            898, 507, 920, 419, 939, 436, 957, 495, 975, 495, 994, 548, 990,
+            568, 999, 585, 1009, 565, 1054, 565, 997, 746, 955, 746, 967, 703,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -399,7 +473,14 @@ const SERVER_TOUR_DATA = {
         {
           id: "power-cable-pcie-gpu-1-cables",
           label: "Power cable for PCIe GPU 1",
-          pointsPx: [2644, 751, 2767, 817, 2758, 838, 2896, 946, 3160, 1066, 3499, 1183, 3775, 1258, 3947, 1300, 3905, 1372, 3908, 1423, 3869, 1426, 3745, 1510, 3655, 1534, 3142, 1483, 2941, 1546, 2734, 1669, 2454, 1765, 2139, 1844, 2121, 1729, 2397, 1621, 2559, 1543, 2752, 1489, 2983, 1435, 3055, 1408, 3313, 1351, 3412, 1336, 3220, 1255, 3013, 1174, 2785, 1087, 2662, 1027, 2638, 1054, 2508, 991, 2565, 814],
+          pointsPx: [
+            2644, 751, 2767, 817, 2758, 838, 2896, 946, 3160, 1066, 3499, 1183,
+            3775, 1258, 3947, 1300, 3905, 1372, 3908, 1423, 3869, 1426, 3745,
+            1510, 3655, 1534, 3142, 1483, 2941, 1546, 2734, 1669, 2454, 1765,
+            2139, 1844, 2121, 1729, 2397, 1621, 2559, 1543, 2752, 1489, 2983,
+            1435, 3055, 1408, 3313, 1351, 3412, 1336, 3220, 1255, 3013, 1174,
+            2785, 1087, 2662, 1027, 2638, 1054, 2508, 991, 2565, 814,
+          ],
           sourceWidth: 4080,
           sourceHeight: 3072,
           content: {
@@ -410,12 +491,17 @@ const SERVER_TOUR_DATA = {
         },
         {
           id: "pcie-cable-mcio-cables",
-          label: "PCIe cable (MCIO)",
-          pointsPx: [833, 1030, 1010, 925, 1226, 1087, 1376, 1132, 1476, 1204, 1638, 1384, 2118, 1666, 2157, 2015, 2325, 2111, 2262, 2234, 2196, 2183, 2052, 2237, 1812, 2060, 1815, 2012, 1902, 1874, 1470, 1582, 1313, 1468, 1124, 1306, 1148, 1270, 1034, 1225, 821, 1051],
+          label: "PCIe cable (Slim SAS)",
+          pointsPx: [
+            833, 1030, 1010, 925, 1226, 1087, 1376, 1132, 1476, 1204, 1638,
+            1384, 2118, 1666, 2157, 2015, 2325, 2111, 2262, 2234, 2196, 2183,
+            2052, 2237, 1812, 2060, 1815, 2012, 1902, 1874, 1470, 1582, 1313,
+            1468, 1124, 1306, 1148, 1270, 1034, 1225, 821, 1051,
+          ],
           sourceWidth: 4080,
           sourceHeight: 3072,
           content: {
-            title: "PCIe cable (MCIO)",
+            title: "PCIe cable (Slim SAS)",
             what: "A high-speed cable connector used to link PCIe devices, commonly used for GPU to GPU communication.",
             role: "Enables data transfer between GPUs and the motherboard for compute and memory access.",
           },
@@ -435,12 +521,14 @@ const SERVER_TOUR_DATA = {
         {
           id: "pcie-cable-sockets",
           label: "PCIe cable sockets",
-          pointsPx: [1926, 2234, 2103, 2396, 1500, 3066, 1277, 3066, 1199, 2999],
+          pointsPx: [
+            1926, 2234, 2103, 2396, 1500, 3066, 1277, 3066, 1199, 2999,
+          ],
           sourceWidth: 4080,
           sourceHeight: 3072,
           content: {
             title: "PCIe cable sockets",
-            what: "Ports on the motherboard or riser cards that accept PCIe MCIO cables for device connectivity.",
+            what: "Ports on the motherboard or riser cards that accept PCIe Slim SAS cables for device connectivity.",
             role: "Enables high-bandwidth data links between GPUs, storage, and other expansion devices.",
           },
         },
@@ -466,7 +554,9 @@ const SERVER_TOUR_DATA = {
         {
           id: "heatsink-1",
           label: "Heatsink 1",
-          pointsPx: [434, 194, 422, 249, 454, 447, 677, 452, 707, 248, 701, 197],
+          pointsPx: [
+            434, 194, 422, 249, 454, 447, 677, 452, 707, 248, 701, 197,
+          ],
           sourceWidth: 1180,
           sourceHeight: 592,
           content: {
@@ -478,7 +568,9 @@ const SERVER_TOUR_DATA = {
         {
           id: "heatsink-2",
           label: "Heatsink 2",
-          pointsPx: [706, 198, 712, 253, 682, 456, 995, 458, 1122, 250, 1099, 195],
+          pointsPx: [
+            706, 198, 712, 253, 682, 456, 995, 458, 1122, 250, 1099, 195,
+          ],
           sourceWidth: 1180,
           sourceHeight: 592,
           content: {
@@ -521,7 +613,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "pcie-fins",
           label: "PCIe fins",
-          pointsPx: [621, 690, 622, 711, 600, 714, 606, 737, 655, 733, 657, 704, 667, 705, 668, 745, 1056, 737, 1054, 680],
+          pointsPx: [
+            621, 690, 622, 711, 600, 714, 606, 737, 655, 733, 657, 704, 667,
+            705, 668, 745, 1056, 737, 1054, 680,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
@@ -533,7 +628,10 @@ const SERVER_TOUR_DATA = {
         {
           id: "gpu-chip-power-system",
           label: "GPU chip power system",
-          pointsPx: [490, 367, 490, 384, 530, 386, 534, 416, 534, 436, 491, 436, 492, 599, 531, 600, 534, 587, 574, 584, 569, 353],
+          pointsPx: [
+            490, 367, 490, 384, 530, 386, 534, 416, 534, 436, 491, 436, 492,
+            599, 531, 600, 534, 587, 574, 584, 569, 353,
+          ],
           sourceWidth: 1280,
           sourceHeight: 963,
           content: {
